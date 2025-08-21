@@ -30,7 +30,7 @@ jobs:
 
 
             - name: Docker build Imange
-              run: docker build -t ${{env.ECR_REGISTRY}}:${{github.run_number}}
+              run: docker build -t ${{env.ECR_REGISTRY}}:${{github.run_number}} .
 
             - name: Trivy Scan
               run: trivy image --exit-code 0 --severity HIGH,CRITICAL --format json -o trivy-report.json ${{ env.ECR_REGISTRY }}:${{ github.run_number }}
