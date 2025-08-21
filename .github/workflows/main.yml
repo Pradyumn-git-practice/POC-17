@@ -19,7 +19,7 @@ jobs:
               uses: sonarsource/sonarqube-scan-action@v4.2.0
               with:
                 args: >
-                    -Dsonar.projectKey=githubaction
+                    -Dsonar.projectKey=poc-17
                     -Dsonar.sources=.
                     -Dsonar.java.binaries=target/classes
                     -Dsonar.qualitygate.wait=true
