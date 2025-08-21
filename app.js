@@ -3,7 +3,7 @@ const app = express();
 const PORT = 3000;
 
 app.get('/ui', (req, res) => {
-  res.send('CI/CD Pipeline with Jenkins, Docker ! 4:38');
+  res.send('CI/CD Pipeline with Jenkins, Docker ! 4:58');
 });
 
 app.listen(PORT, () => {
