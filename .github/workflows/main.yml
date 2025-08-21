@@ -1,0 +1,42 @@
+name: Project 17
+
+on: push
+
+jobs:
+    Build-and-Deploy:
+        runs-on: [self-hosted,ec2-label]
+        steps:
+            - name: Checkout stage
+              uses: actions/checkout@v2
+
+            - name: sonarscan
+              uses: sonarsource/sonarqube-scan-action@v4.2.0
+              env:
+                SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+                SONAR_HOST_URL: ${{ env.SONAR_HOST_URL }}
+              with:
+                args: >
+                    -Dsonar.projectKey=githubaction
+                    -Dsonar.sources=.
+                    -Dsonar.java.binaries=target/classes
+                    -Dsonar.qualitygate.wait=true
+            
+
+
+            - name: Docker build Imange
+              run: docker build -t ${{env.ECR_REGISTRY}}:${{github.run_number}}
+
+            - name: Trivy Scan
+              run: trivy image --exit-code 0 --severity HIGH,CRITICAL --format json -o trivy-report.json ${{ env.ECR_REGISTRY }}:${{ github.run_number }}
+
+            - name: ECR Login
+              run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{env.ECR_REGISTRY}}
+
+
+            - name: Docker Push
+              run: docker push ${{env.ECR_REGISTRY}}:${{github.run_number}}
+
+            - name: Deploy Stage
+              run: |
+                sed "s|IMAGE_TAG|${{github.run_number}}|g" k8/deployment.yml > k8s/deployment.generated.yaml
+                kubectl apply -f k8s/deployment.generated.yaml
