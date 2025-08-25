@@ -1,0 +1,7 @@
+1. Project Overview
+
+10-word Description:
+Automate application deployment using GitHub Actions and AWS EKS.
+
+20–25 word Explanation:
+This project implements a complete CI/CD pipeline using GitHub Actions and Amazon EKS. It includes Docker builds, image scans, Terraform deployment, SonarQube analysis, and Slack notifications.
